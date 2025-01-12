@@ -14,18 +14,11 @@ impl shuttle_runtime::Service for CustomService {
 
 #[tokio::main]
 async fn main() {
-    __internals::start(__loader, runner).await;
+    __internals::start(loader, runner).await;
 }
 
-async fn __loader(factory: ResourceFactory) -> Result<Vec<Vec<u8>>, shuttle_runtime::Error> {
-    let mut inputs = Vec::new();
-    let input: <shuttle_shared_db::Postgres as ResourceInputBuilder>::Input =
-        shuttle_shared_db::Postgres::default()
-            .build(&factory)
-            .await?;
-    let json = serde_json::to_vec(&input).unwrap();
-    inputs.push(json);
-    Ok(inputs)
+async fn loader(_factory: ResourceFactory) -> Result<Vec<Vec<u8>>, shuttle_runtime::Error> {
+    todo!()
 }
 
 async fn runner(resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runtime::Error> {
