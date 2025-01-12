@@ -1,0 +1,8 @@
+[package]
+name = "ice_mre_invalid_coerce_unsized"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+shuttle-runtime = { version = "0.51.0", default-features = false }
+shuttle-shared-db = { version = "0.51.0", default-features = false, features = ["postgres", "opendal-postgres"] }
