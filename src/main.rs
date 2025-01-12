@@ -1,3 +1,5 @@
+use shuttle_runtime::tokio;
+
 struct CustomService;
 #[shuttle_runtime::async_trait]
 impl shuttle_runtime::Service for CustomService {
@@ -6,14 +8,9 @@ impl shuttle_runtime::Service for CustomService {
     }
 }
 
-fn main() {
-    ::shuttle_runtime::tokio::runtime::Builder::new_multi_thread()
-        .enable_all()
-        .build()
-        .unwrap()
-        .block_on(async {
-            ::shuttle_runtime::__internals::start(__loader, __runner).await;
-        })
+#[tokio::main]
+async fn main() {
+    ::shuttle_runtime::__internals::start(__loader, __runner).await;
 }
 
 async fn __loader(
