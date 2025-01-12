@@ -1,0 +1,8 @@
+default_job = "build"
+[jobs.build]
+command = ["cargo", "build"]
+need_stdout = true
+
+[keybindings]
+b = "job:build"
+c = "job:check"
