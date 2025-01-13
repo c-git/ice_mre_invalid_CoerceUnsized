@@ -1,4 +1,4 @@
-use shuttle_runtime::{async_trait, http, IntoResource, ResourceInputBuilder};
+use shuttle_runtime::{async_trait, IntoResource, ResourceInputBuilder};
 use std::{
     future::Future,
     sync::{Arc, Mutex},

@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+http = "0.2.12"
 opendal = "0.51"
 serde = "1.0.217"
 serde_json = "1.0.135"
