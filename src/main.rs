@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde::Deserialize;
 use std::{
     future::Future,
     sync::{Arc, Mutex},
@@ -16,30 +16,16 @@ async fn main() {
     server_builder.add_service(svc);
 }
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Deserialize)]
 struct Wrapper {
     #[serde(skip)]
     inner: Option<opendal::Operator>,
-}
-#[derive(Default, Serialize, Deserialize)]
-struct CustomResource;
-#[async_trait]
-impl ResourceInputBuilder for CustomResource {
-    type Input = ();
-    type Output = Wrapper;
-
-    async fn build(
-        self,
-        _factory: &ResourceFactory,
-    ) -> Result<Self::Input, shuttle_runtime::Error> {
-        todo!()
-    }
 }
 
 async fn runner() {
     // Doesn't happen if I trivially replace either of these lines like with a todo!() instead of the assigned value
     let x: Wrapper = serde_json::from_slice("".as_bytes()).unwrap();
-    let operator: opendal::Operator = x.into_resource1().unwrap();
+    let operator: opendal::Operator = x.inner.unwrap();
 
     // Didn't test
     // operator.delete_stream().await.unwrap();
@@ -156,27 +142,3 @@ where
 
 pub type BoxFuture<T, E> =
     std::pin::Pin<Box<dyn self::Future<Output = Result<T, E>> + Send + 'static>>;
-
-#[async_trait]
-pub trait IntoResource<R>: Serialize + DeserializeOwned {
-    async fn into_resource(self) -> Result<R, shuttle_runtime::Error>;
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct ResourceFactory {}
-
-/// want to provision and how to do it on your behalf on the fly.
-#[async_trait]
-pub trait ResourceInputBuilder: Default {
-    type Input: Serialize + DeserializeOwned;
-
-    type Output: Serialize + DeserializeOwned;
-
-    async fn build(self, factory: &ResourceFactory) -> Result<Self::Input, shuttle_runtime::Error>;
-}
-
-impl Wrapper {
-    fn into_resource1(self) -> Result<opendal::Operator, shuttle_runtime::Error> {
-        todo!()
-    }
-}
