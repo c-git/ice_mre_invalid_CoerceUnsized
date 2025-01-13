@@ -1055,6 +1055,8 @@ dependencies = [
 name = "ice_mre_invalid_coerce_unsized"
 version = "0.1.0"
 dependencies = [
+ "opendal",
+ "serde",
  "shuttle-runtime",
  "shuttle-shared-db",
 ]
