@@ -13,7 +13,6 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-#[derive(Clone)]
 struct CustomService;
 #[shuttle_runtime::async_trait]
 impl shuttle_runtime::Service for CustomService {
