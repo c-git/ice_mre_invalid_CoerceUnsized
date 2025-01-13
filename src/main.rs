@@ -207,7 +207,7 @@ where
     fn call(&mut self, req: http::Request<B>) -> Self::Future {
         match req.uri().path() {
             "" => {
-                #[allow(non_camel_case_types)]
+                #[allow(non_camel_case_types, dead_code)]
                 struct LoadSvc<T: Runtime>(pub Arc<T>);
                 impl<T: Runtime> tonic::server::UnaryService<LoadRequest> for LoadSvc<T> {
                     type Response = LoadResponse;
