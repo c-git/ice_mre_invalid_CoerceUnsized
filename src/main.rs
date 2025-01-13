@@ -1,16 +1,18 @@
-use std::{future::Future, sync::Mutex};
-
-use runtime_server::Runtime;
 use shuttle_runtime::{
     runtime::*,
-    tonic::{transport::Server, Request, Response, Status},
+    tonic::{self, server::NamedService, transport::Server, Request, Response, Status},
     IntoResource,
     __internals::serde_json,
-    async_trait,
+    async_trait, http,
     tokio::{self},
-    ReceiverStream, ResourceInputBuilder, RuntimeServer, Service,
+    ReceiverStream, ResourceInputBuilder, Service,
+};
+use std::{
+    future::Future,
+    sync::{Arc, Mutex},
 };
 
+#[derive(Clone)]
 struct CustomService;
 #[shuttle_runtime::async_trait]
 impl shuttle_runtime::Service for CustomService {
@@ -124,3 +126,88 @@ where
 {
     type Service = S;
 }
+
+#[async_trait]
+pub trait Runtime: Send + Sync + 'static {
+    /// Load a service file to be ready to start it
+    async fn load(
+        &self,
+        request: tonic::Request<LoadRequest>,
+    ) -> std::result::Result<tonic::Response<LoadResponse>, tonic::Status>;
+    /// Start a loaded service file
+    async fn start(
+        &self,
+        request: tonic::Request<StartRequest>,
+    ) -> std::result::Result<tonic::Response<StartResponse>, tonic::Status>;
+    /// Stop a started service
+    async fn stop(
+        &self,
+        request: tonic::Request<StopRequest>,
+    ) -> std::result::Result<tonic::Response<StopResponse>, tonic::Status>;
+    /// Server streaming response type for the SubscribeStop method.
+    type SubscribeStopStream: tonic::codegen::tokio_stream::Stream<
+            Item = std::result::Result<SubscribeStopResponse, tonic::Status>,
+        > + Send
+        + 'static;
+    /// Channel to notify a service has been stopped
+    async fn subscribe_stop(
+        &self,
+        request: tonic::Request<SubscribeStopRequest>,
+    ) -> std::result::Result<tonic::Response<Self::SubscribeStopStream>, tonic::Status>;
+    async fn version(
+        &self,
+        request: tonic::Request<Ping>,
+    ) -> std::result::Result<tonic::Response<VersionInfo>, tonic::Status>;
+    async fn health_check(
+        &self,
+        request: tonic::Request<Ping>,
+    ) -> std::result::Result<tonic::Response<Pong>, tonic::Status>;
+}
+
+pub struct RuntimeServer<T: Runtime> {
+    inner: Arc<T>,
+}
+
+impl<T: Runtime> Clone for RuntimeServer<T> {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+        }
+    }
+}
+
+impl<T: Runtime> NamedService for RuntimeServer<T> {
+    const NAME: &'static str = "";
+}
+impl<T: Runtime> RuntimeServer<T> {
+    pub fn new(inner: T) -> Self {
+        Self {
+            inner: Arc::new(inner),
+        }
+    }
+}
+
+impl<T, B> tower::Service<http::Request<B>> for RuntimeServer<T>
+where
+    T: Runtime,
+    B: tonic::codegen::Body + Send + 'static,
+    B::Error: Into<StdError> + Send + 'static,
+{
+    type Response = http::Response<tonic::body::BoxBody>;
+    type Error = std::convert::Infallible;
+    type Future = BoxFuture<Self::Response, Self::Error>;
+    fn poll_ready(
+        &mut self,
+        _cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Result<(), Self::Error>> {
+        todo!()
+    }
+
+    fn call(&mut self, _req: http::Request<B>) -> Self::Future {
+        todo!()
+    }
+}
+
+pub type StdError = Box<dyn std::error::Error + Send + Sync + 'static>;
+pub type BoxFuture<T, E> =
+    std::pin::Pin<Box<dyn self::Future<Output = Result<T, E>> + Send + 'static>>;

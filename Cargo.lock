@@ -1059,6 +1059,7 @@ dependencies = [
  "serde",
  "shuttle-runtime",
  "shuttle-shared-db",
+ "tower 0.5.2",
 ]
 
 [[package]]
@@ -1444,9 +1445,9 @@ checksum = "1261fe7e33c73b354eab43b1273a57c8f967d0391e80353e51f764ac02cf6775"
 
 [[package]]
 name = "opendal"
-version = "0.51.0"
+version = "0.51.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c8cd8697b917793c15a7b4a8afcba44e35e2abbc55c363064851776f7c81136"
+checksum = "8c9dcfa7a3615e3c60eb662ed6b46b6f244cf2658098f593c0c0915430b3a268"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2253,7 +2254,7 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 [[package]]
 name = "shuttle-api-client"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#ddad6e44739a520b01c93966423a3669fbd9af3d"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#761b5724e268806b0c3b5f0dbc4bc559c4e424d5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2275,7 +2276,7 @@ dependencies = [
 [[package]]
 name = "shuttle-codegen"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#ddad6e44739a520b01c93966423a3669fbd9af3d"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#761b5724e268806b0c3b5f0dbc4bc559c4e424d5"
 dependencies = [
  "proc-macro-error2",
  "proc-macro2",
@@ -2286,7 +2287,7 @@ dependencies = [
 [[package]]
 name = "shuttle-common"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#ddad6e44739a520b01c93966423a3669fbd9af3d"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#761b5724e268806b0c3b5f0dbc4bc559c4e424d5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2316,7 +2317,7 @@ dependencies = [
 [[package]]
 name = "shuttle-proto"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#ddad6e44739a520b01c93966423a3669fbd9af3d"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#761b5724e268806b0c3b5f0dbc4bc559c4e424d5"
 dependencies = [
  "futures-core",
  "prost",
@@ -2328,7 +2329,7 @@ dependencies = [
 [[package]]
 name = "shuttle-runtime"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#ddad6e44739a520b01c93966423a3669fbd9af3d"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#761b5724e268806b0c3b5f0dbc4bc559c4e424d5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2351,7 +2352,7 @@ dependencies = [
 [[package]]
 name = "shuttle-service"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#ddad6e44739a520b01c93966423a3669fbd9af3d"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#761b5724e268806b0c3b5f0dbc4bc559c4e424d5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2364,7 +2365,7 @@ dependencies = [
 [[package]]
 name = "shuttle-shared-db"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#ddad6e44739a520b01c93966423a3669fbd9af3d"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#761b5724e268806b0c3b5f0dbc4bc559c4e424d5"
 dependencies = [
  "async-trait",
  "diesel-async",
