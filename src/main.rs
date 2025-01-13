@@ -26,12 +26,6 @@ async fn runner(resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runtim
     let x: <shuttle_shared_db::Postgres as ResourceInputBuilder>::Output =
         serde_json::from_slice(&iter.next().unwrap()).unwrap();
     let operator: shuttle_shared_db::SerdeJsonOperator = x.into_resource().await.unwrap();
-    shuttle_main(operator).await
-}
-
-async fn shuttle_main(
-    operator: shuttle_shared_db::SerdeJsonOperator,
-) -> Result<CustomService, shuttle_runtime::Error> {
     operator.0.check().await.unwrap();
     todo!()
 }
