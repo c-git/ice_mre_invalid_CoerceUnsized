@@ -77,7 +77,7 @@ impl<R> Alpha<R> {
     }
 }
 
-#[async_trait]
+#[async_trait] // No ICE if Runner constraint is removed
 impl<R> Runtime for Alpha<R> where R: Runner + Send + 'static {}
 
 #[async_trait]
@@ -86,7 +86,7 @@ pub trait Runner {}
 #[async_trait]
 impl<F, O> Runner for F
 where
-    F: FnOnce() -> O + Send,
+    F: FnOnce() -> O,
     O: Future<Output = ()> + Send,
 {
 }
