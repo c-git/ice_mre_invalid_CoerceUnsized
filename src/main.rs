@@ -102,7 +102,7 @@ impl<T, B> tower::Service<http::Request<B>> for RuntimeServer<T>
 where
     T: Runtime,
     B: tonic::codegen::Body + Send + 'static,
-    B::Error: Into<StdError> + Send + 'static,
+    B::Error: std::error::Error + Sync + Send + 'static,
 {
     type Response = http::Response<tonic::body::BoxBody>;
     type Error = std::convert::Infallible;
@@ -141,6 +141,5 @@ where
     }
 }
 
-pub type StdError = Box<dyn std::error::Error + Send + Sync + 'static>;
 pub type BoxFuture<T, E> =
     std::pin::Pin<Box<dyn self::Future<Output = Result<T, E>> + Send + 'static>>;
