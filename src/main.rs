@@ -21,10 +21,9 @@ async fn loader(_factory: ResourceFactory) -> Result<Vec<Vec<u8>>, shuttle_runti
     todo!()
 }
 
-async fn runner(resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runtime::Error> {
-    let mut iter = resources.into_iter();
+async fn runner(_resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runtime::Error> {
     let x: <shuttle_shared_db::Postgres as ResourceInputBuilder>::Output =
-        serde_json::from_slice(&iter.next().unwrap()).unwrap();
+        serde_json::from_slice("".as_bytes()).unwrap();
     let operator: opendal::Operator = x.into_resource().await.unwrap();
     operator.check().await.unwrap();
     todo!()
