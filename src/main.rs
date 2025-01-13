@@ -100,7 +100,7 @@ where
         todo!()
     }
 
-    async fn version(&self, _requset: Request<Ping>) -> Result<Response<VersionInfo>, Status> {
+    async fn version(&self, _request: Request<Ping>) -> Result<Response<VersionInfo>, Status> {
         todo!()
     }
 
