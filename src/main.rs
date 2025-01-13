@@ -1,5 +1,6 @@
 use async_trait::async_trait;
-use shuttle_runtime::{IntoResource, ResourceInputBuilder};
+use serde::{Deserialize, Serialize};
+use shuttle_runtime::{IntoResource, ResourceFactory, ResourceInputBuilder};
 use std::{
     future::Future,
     sync::{Arc, Mutex},
@@ -16,11 +17,31 @@ async fn main() {
     server_builder.add_service(svc);
 }
 
+#[derive(Default, Serialize, Deserialize)]
+struct Wrapper {
+    #[serde(skip)]
+    inner: Option<opendal::Operator>,
+}
+#[derive(Default, Serialize, Deserialize)]
+struct CustomResource;
+#[async_trait]
+impl ResourceInputBuilder for CustomResource {
+    type Input = ();
+    type Output = Wrapper;
+
+    async fn build(
+        self,
+        _factory: &ResourceFactory,
+    ) -> Result<Self::Input, shuttle_runtime::Error> {
+        todo!()
+    }
+}
+
 async fn runner() {
     // Doesn't happen if I trivially replace either of these lines like with a todo!() instead of the assigned value
-    let x: <shuttle_shared_db::Postgres as ResourceInputBuilder>::Output =
+    let x: <CustomResource as ResourceInputBuilder>::Output =
         serde_json::from_slice("".as_bytes()).unwrap();
-    let operator: opendal::Operator = x.into_resource().await.unwrap();
+    let operator: opendal::Operator = x.into_resource().await.unwrap().inner.unwrap();
 
     // Didn't test
     // operator.delete_stream().await.unwrap();
