@@ -29,7 +29,7 @@ async fn main() {
     server_builder.add_service(svc);
 }
 
-async fn runner(_resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runtime::Error> {
+async fn runner() -> Result<CustomService, shuttle_runtime::Error> {
     // Doesn't happen if I trivially replace either of these lines like with a todo!() instead of the assigned value
     let x: <shuttle_shared_db::Postgres as ResourceInputBuilder>::Output =
         serde_json::from_slice("".as_bytes()).unwrap();
@@ -114,19 +114,19 @@ where
 pub trait Runner {
     type Service: Service;
 
-    async fn run(self, resources: Vec<Vec<u8>>) -> Result<Self::Service, shuttle_runtime::Error>;
+    async fn run(self) -> Result<Self::Service, shuttle_runtime::Error>;
 }
 
 #[async_trait]
 impl<F, O, S> Runner for F
 where
-    F: FnOnce(Vec<Vec<u8>>) -> O + Send,
+    F: FnOnce() -> O + Send,
     O: Future<Output = Result<S, shuttle_runtime::Error>> + Send,
     S: Service,
 {
     type Service = S;
 
-    async fn run(self, resources: Vec<Vec<u8>>) -> Result<Self::Service, shuttle_runtime::Error> {
-        (self)(resources).await
+    async fn run(self) -> Result<Self::Service, shuttle_runtime::Error> {
+        self().await
     }
 }
