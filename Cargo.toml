@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-shuttle-runtime = { version = "0.51.0", default-features = false }
-shuttle-shared-db = { version = "0.51.0", default-features = false, features = ["postgres", "opendal-postgres"] }
 opendal = "0.51"
 serde = "1.0.217"
+shuttle-runtime = { version = "0.51.0", default-features = false, git = "https://github.com/c-git/shuttle", branch = "ice_investigation" }
+shuttle-shared-db = { version = "0.51.0", default-features = false, features = ["postgres", "opendal-postgres"], git = "https://github.com/c-git/shuttle", branch = "ice_investigation" }

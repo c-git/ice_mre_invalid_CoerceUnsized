@@ -1,7 +1,7 @@
 use shuttle_runtime::{
     IntoResource,
     __internals::{self, serde_json},
-    tokio, ResourceFactory, ResourceInputBuilder,
+    start, tokio, ResourceFactory, ResourceInputBuilder,
 };
 
 struct CustomService;
@@ -14,7 +14,7 @@ impl shuttle_runtime::Service for CustomService {
 
 #[tokio::main]
 async fn main() {
-    __internals::start(loader, runner).await;
+    start(loader, runner).await;
 }
 
 async fn loader(_factory: ResourceFactory) -> Result<Vec<Vec<u8>>, shuttle_runtime::Error> {
