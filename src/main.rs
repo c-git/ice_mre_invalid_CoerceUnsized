@@ -1,7 +1,5 @@
 use shuttle_runtime::{
-    IntoResource,
-    __internals::{self, serde_json},
-    start, tokio, ResourceFactory, ResourceInputBuilder,
+    IntoResource, __internals::serde_json, start, tokio, ResourceFactory, ResourceInputBuilder,
 };
 
 struct CustomService;
