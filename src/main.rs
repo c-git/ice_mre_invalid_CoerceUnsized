@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::{future::Future, sync::Mutex};
 
 use runtime_server::Runtime;
 use shuttle_runtime::{
@@ -8,7 +8,7 @@ use shuttle_runtime::{
     __internals::serde_json,
     async_trait,
     tokio::{self},
-    ReceiverStream, ResourceInputBuilder, Runner, RuntimeServer, Service,
+    ReceiverStream, ResourceInputBuilder, RuntimeServer, Service,
 };
 
 struct CustomService;
@@ -58,6 +58,7 @@ async fn runner(_resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runti
     todo!()
 }
 
+#[allow(dead_code)]
 pub struct Alpha<R> {
     runner: Mutex<Option<R>>,
 }
@@ -106,5 +107,26 @@ where
 
     async fn health_check(&self, _request: Request<Ping>) -> Result<Response<Pong>, Status> {
         todo!()
+    }
+}
+
+#[async_trait]
+pub trait Runner {
+    type Service: Service;
+
+    async fn run(self, resources: Vec<Vec<u8>>) -> Result<Self::Service, shuttle_runtime::Error>;
+}
+
+#[async_trait]
+impl<F, O, S> Runner for F
+where
+    F: FnOnce(Vec<Vec<u8>>) -> O + Send,
+    O: Future<Output = Result<S, shuttle_runtime::Error>> + Send,
+    S: Service,
+{
+    type Service = S;
+
+    async fn run(self, resources: Vec<Vec<u8>>) -> Result<Self::Service, shuttle_runtime::Error> {
+        (self)(resources).await
     }
 }
