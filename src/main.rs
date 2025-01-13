@@ -1,6 +1,4 @@
-use shuttle_runtime::{
-    IntoResource, __internals::serde_json, async_trait, http, ResourceInputBuilder,
-};
+use shuttle_runtime::{async_trait, http, IntoResource, ResourceInputBuilder};
 use std::{
     future::Future,
     sync::{Arc, Mutex},

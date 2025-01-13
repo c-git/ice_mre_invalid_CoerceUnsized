@@ -1057,6 +1057,7 @@ version = "0.1.0"
 dependencies = [
  "opendal",
  "serde",
+ "serde_json",
  "shuttle-runtime",
  "shuttle-shared-db",
  "tokio",

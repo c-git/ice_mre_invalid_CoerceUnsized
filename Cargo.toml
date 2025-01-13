@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 opendal = "0.51"
 serde = "1.0.217"
+serde_json = "1.0.135"
 shuttle-runtime = { version = "0.51.0", default-features = false, git = "https://github.com/c-git/shuttle", branch = "ice_investigation" }
 shuttle-shared-db = { version = "0.51.0", default-features = false, features = ["postgres", "opendal-postgres"], git = "https://github.com/c-git/shuttle", branch = "ice_investigation" }
 tokio = "1.43"
