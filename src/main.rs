@@ -27,19 +27,19 @@ async fn runner(_resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runti
 
     // Only happens with any one of the follow async but not the other functions (barring the two mentioned as not tested above)
     operator.check().await.unwrap();
-    operator.write("", vec![0; 2]).await.unwrap();
-    operator.writer("").await.unwrap();
-    operator.write_with("", "").await.unwrap();
-    operator
-        .delete_try_iter([Ok("")].into_iter())
-        .await
-        .unwrap();
-    operator.deleter().await.unwrap();
-    operator.list("").await.unwrap();
-    operator.remove_all("").await.unwrap();
-    operator.list_with("").await.unwrap();
-    operator.lister("").await.unwrap();
-    operator.lister_with("").await.unwrap();
+    // operator.write("", vec![0; 2]).await.unwrap();
+    // operator.writer("").await.unwrap();
+    // operator.write_with("", "").await.unwrap();
+    // operator
+    //     .delete_try_iter([Ok("")].into_iter())
+    //     .await
+    //     .unwrap();
+    // operator.deleter().await.unwrap();
+    // operator.list("").await.unwrap();
+    // operator.remove_all("").await.unwrap();
+    // operator.list_with("").await.unwrap();
+    // operator.lister("").await.unwrap();
+    // operator.lister_with("").await.unwrap();
 
     todo!()
 }
