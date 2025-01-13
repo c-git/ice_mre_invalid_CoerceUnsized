@@ -12,7 +12,11 @@ impl shuttle_runtime::Service for CustomService {
 
 #[tokio::main]
 async fn main() {
-    start(runner).await;
+    start(loader, runner).await;
+}
+
+async fn loader(_factory: ResourceFactory) -> Result<Vec<Vec<u8>>, shuttle_runtime::Error> {
+    todo!()
 }
 
 async fn runner(_resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runtime::Error> {

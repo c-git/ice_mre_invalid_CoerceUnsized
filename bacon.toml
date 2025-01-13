@@ -1,7 +1,11 @@
 default_job = "update-and-check"
 
 [jobs.build]
-command = ["cargo", "build"]
+command = [
+  "sh",
+  "-c",
+  "cargo update && cargo build",
+]
 need_stdout = true
 
 [jobs.update-and-check]
