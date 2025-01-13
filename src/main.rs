@@ -1,14 +1,12 @@
 use async_trait::async_trait;
 use serde::Deserialize;
 use std::future::Future;
-use tonic::{self, server::NamedService, transport::Server};
+use tonic::{server::NamedService, transport::Server};
 
 #[tokio::main]
 async fn main() {
-    let mut server_builder = Server::builder();
-
     let svc = RuntimeServer::new(runner);
-    server_builder.add_service(svc);
+    Server::builder().add_service(svc);
 }
 
 async fn runner() {
