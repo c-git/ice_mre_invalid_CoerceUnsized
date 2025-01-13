@@ -1059,6 +1059,7 @@ dependencies = [
  "serde",
  "shuttle-runtime",
  "shuttle-shared-db",
+ "tokio",
  "tonic",
  "tower 0.5.2",
 ]

@@ -1,9 +1,5 @@
 use shuttle_runtime::{
-    IntoResource,
-    __internals::serde_json,
-    async_trait, http,
-    tokio::{self},
-    ResourceInputBuilder,
+    IntoResource, __internals::serde_json, async_trait, http, ResourceInputBuilder,
 };
 use std::{
     future::Future,
