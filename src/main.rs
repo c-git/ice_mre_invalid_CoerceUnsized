@@ -1,6 +1,20 @@
+use std::sync::{Arc, Mutex};
+
+use runtime_server::Runtime;
 use shuttle_runtime::{
-    tonic::transport::Server, IntoResource, __internals::serde_json, tokio, Alpha,
-    ResourceInputBuilder, RuntimeServer,
+    runtime::*,
+    tonic::{transport::Server, Request, Response, Status},
+    IntoResource,
+    __internals::serde_json,
+    async_trait,
+    tokio::{
+        self,
+        sync::{
+            broadcast::{self, Sender},
+            oneshot,
+        },
+    },
+    Loader, ReceiverStream, ResourceInputBuilder, Runner, RuntimeServer, Service, State,
 };
 
 struct CustomService;
@@ -50,4 +64,69 @@ async fn runner(_resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runti
     // operator.lister_with("").await.unwrap();
 
     todo!()
+}
+
+pub struct Alpha<L, R> {
+    // Mutexes are for interior mutability
+    stopped_tx: Sender<(StopReason, String)>,
+    kill_tx: Mutex<Option<oneshot::Sender<String>>>,
+    loader: Mutex<Option<L>>,
+    runner: Mutex<Option<R>>,
+    /// The current state of the runtime, which is used by the ECS task to determine if the runtime
+    /// is healthy.
+    state: Arc<Mutex<State>>,
+}
+
+impl<L, R> Alpha<L, R> {
+    pub fn new(loader: L, runner: R) -> Self {
+        let (stopped_tx, _stopped_rx) = broadcast::channel(10);
+
+        Self {
+            stopped_tx,
+            kill_tx: Mutex::new(None),
+            loader: Mutex::new(Some(loader)),
+            runner: Mutex::new(Some(runner)),
+            state: Arc::new(Mutex::new(State::Unhealthy)),
+        }
+    }
+}
+
+#[async_trait]
+impl<L, R, S> Runtime for Alpha<L, R>
+where
+    L: Loader + Send + 'static,
+    R: Runner<Service = S> + Send + 'static,
+    S: Service + 'static,
+{
+    async fn load(&self, request: Request<LoadRequest>) -> Result<Response<LoadResponse>, Status> {
+        todo!()
+    }
+
+    async fn start(
+        &self,
+        request: Request<StartRequest>,
+    ) -> Result<Response<StartResponse>, Status> {
+        todo!()
+    }
+
+    async fn stop(&self, _request: Request<StopRequest>) -> Result<Response<StopResponse>, Status> {
+        todo!()
+    }
+
+    type SubscribeStopStream = ReceiverStream<Result<SubscribeStopResponse, Status>>;
+
+    async fn subscribe_stop(
+        &self,
+        _request: Request<SubscribeStopRequest>,
+    ) -> Result<Response<Self::SubscribeStopStream>, Status> {
+        todo!()
+    }
+
+    async fn version(&self, _requset: Request<Ping>) -> Result<Response<VersionInfo>, Status> {
+        todo!()
+    }
+
+    async fn health_check(&self, _request: Request<Ping>) -> Result<Response<Pong>, Status> {
+        todo!()
+    }
 }
