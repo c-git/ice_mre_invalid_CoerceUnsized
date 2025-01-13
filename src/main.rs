@@ -1,7 +1,5 @@
-#![allow(unreachable_code)]
 use shuttle_runtime::{
     runtime::*,
-    tonic::{self, server::NamedService, transport::Server, Request, Response, Status},
     IntoResource,
     __internals::serde_json,
     async_trait, http,
@@ -12,6 +10,7 @@ use std::{
     future::Future,
     sync::{Arc, Mutex},
 };
+use tonic::{self, server::NamedService, transport::Server, Request, Response, Status};
 
 #[tokio::main]
 async fn main() {
