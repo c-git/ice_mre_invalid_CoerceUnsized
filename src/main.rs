@@ -1,4 +1,7 @@
-use shuttle_runtime::{IntoResource, __internals::serde_json, start, tokio, ResourceInputBuilder};
+use shuttle_runtime::{
+    tonic::transport::Server, IntoResource, __internals::serde_json, tokio, Alpha,
+    ResourceInputBuilder, RuntimeServer,
+};
 
 struct CustomService;
 #[shuttle_runtime::async_trait]
@@ -10,7 +13,14 @@ impl shuttle_runtime::Service for CustomService {
 
 #[tokio::main]
 async fn main() {
-    start(runner).await;
+    let loader = |_| async { Ok(vec![]) };
+
+    let mut server_builder = Server::builder();
+
+    let alpha = Alpha::new(loader, runner);
+
+    let svc = RuntimeServer::new(alpha);
+    server_builder.add_service(svc);
 }
 
 async fn runner(_resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runtime::Error> {
