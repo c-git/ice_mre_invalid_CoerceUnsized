@@ -1055,6 +1055,7 @@ dependencies = [
 name = "ice_mre_invalid_coerce_unsized"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "http 0.2.12",
  "opendal",
  "serde",
