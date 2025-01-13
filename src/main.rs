@@ -59,6 +59,9 @@ impl<R> Alpha<R> {
 }
 
 #[async_trait]
+impl<R> Runtime for Alpha<R> where R: Runner + Send + 'static {}
+
+#[async_trait]
 pub trait Runner {}
 
 #[async_trait]
@@ -69,11 +72,14 @@ where
 {
 }
 
-pub struct RuntimeServer<T> {
+#[async_trait]
+pub trait Runtime: Send + Sync + 'static {}
+
+pub struct RuntimeServer<T: Runtime> {
     inner: Arc<T>,
 }
 
-impl<T> Clone for RuntimeServer<T> {
+impl<T: Runtime> Clone for RuntimeServer<T> {
     fn clone(&self) -> Self {
         Self {
             inner: self.inner.clone(),
@@ -81,10 +87,10 @@ impl<T> Clone for RuntimeServer<T> {
     }
 }
 
-impl<T> NamedService for RuntimeServer<T> {
+impl<T: Runtime> NamedService for RuntimeServer<T> {
     const NAME: &'static str = "";
 }
-impl<T> RuntimeServer<T> {
+impl<T: Runtime> RuntimeServer<T> {
     pub fn new(inner: T) -> Self {
         Self {
             inner: Arc::new(inner),
@@ -94,7 +100,7 @@ impl<T> RuntimeServer<T> {
 
 impl<T, B> tower::Service<http::Request<B>> for RuntimeServer<T>
 where
-    T: Sync + Send + 'static,
+    T: Runtime,
     B: tonic::codegen::Body + Send + 'static,
     B::Error: std::error::Error + Sync + Send + 'static,
 {
@@ -112,8 +118,8 @@ where
         match req.uri().path() {
             "" => {
                 #[allow(non_camel_case_types, dead_code)]
-                struct LoadSvc<T: Sync + Send>(pub Arc<T>);
-                impl<T: Sync + Send + 'static> tonic::server::UnaryService<()> for LoadSvc<T> {
+                struct LoadSvc<T: Runtime>(pub Arc<T>);
+                impl<T: Runtime> tonic::server::UnaryService<()> for LoadSvc<T> {
                     type Response = ();
                     type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                     fn call(&mut self, _request: tonic::Request<()>) -> Self::Future {
