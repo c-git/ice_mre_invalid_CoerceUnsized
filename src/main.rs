@@ -11,12 +11,6 @@ async fn main() {
     server_builder.add_service(svc);
 }
 
-#[derive(Default, Deserialize)]
-struct Wrapper {
-    #[serde(skip)]
-    inner: Option<opendal::Operator>,
-}
-
 async fn runner() {
     // Doesn't happen if I trivially replace either of these lines like with a todo!() instead of the assigned value
     let x: Wrapper = serde_json::from_slice("".as_bytes()).unwrap();
@@ -43,10 +37,24 @@ async fn runner() {
     // operator.lister_with("").await.unwrap();
 }
 
-#[async_trait] // No ICE if Runner constraint is removed
-impl<T> Runner for RuntimeServer<T> where T: Runner + Send + 'static {}
+pub struct RuntimeServer<T: 'static + Clone> {
+    runner: T,
+}
+
+#[derive(Default, Deserialize)]
+struct Wrapper {
+    #[serde(skip)]
+    inner: Option<opendal::Operator>,
+}
+
+pub type BoxFuture<T, E> =
+    std::pin::Pin<Box<dyn self::Future<Output = Result<T, E>> + Send + 'static>>;
+
 #[async_trait]
 pub trait Runner: Send + Sync + Clone {}
+
+#[async_trait]
+impl<T> Runner for RuntimeServer<T> where T: Runner + Send + 'static {}
 
 #[async_trait]
 impl<F, O> Runner for F
@@ -54,9 +62,6 @@ where
     F: FnOnce() -> O + Send + Sync + Clone,
     O: Future<Output = ()> + Send,
 {
-}
-pub struct RuntimeServer<T: 'static + Clone> {
-    runner: T,
 }
 
 impl<T: Runner> Clone for RuntimeServer<T> {
@@ -116,6 +121,3 @@ where
         }
     }
 }
-
-pub type BoxFuture<T, E> =
-    std::pin::Pin<Box<dyn self::Future<Output = Result<T, E>> + Send + 'static>>;
