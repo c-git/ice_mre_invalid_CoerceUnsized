@@ -6,20 +6,12 @@ use shuttle_runtime::{
     __internals::serde_json,
     async_trait, http,
     tokio::{self},
-    ReceiverStream, ResourceInputBuilder, Service,
+    ReceiverStream, ResourceInputBuilder,
 };
 use std::{
     future::Future,
     sync::{Arc, Mutex},
 };
-
-struct CustomService;
-#[shuttle_runtime::async_trait]
-impl shuttle_runtime::Service for CustomService {
-    async fn bind(mut self, _addr: std::net::SocketAddr) -> Result<(), shuttle_runtime::Error> {
-        todo!()
-    }
-}
 
 #[tokio::main]
 async fn main() {
@@ -31,7 +23,7 @@ async fn main() {
     server_builder.add_service(svc);
 }
 
-async fn runner() -> CustomService {
+async fn runner() {
     // Doesn't happen if I trivially replace either of these lines like with a todo!() instead of the assigned value
     let x: <shuttle_shared_db::Postgres as ResourceInputBuilder>::Output =
         serde_json::from_slice("".as_bytes()).unwrap();
@@ -74,10 +66,9 @@ impl<R> Alpha<R> {
 }
 
 #[async_trait]
-impl<R, S> Runtime for Alpha<R>
+impl<R> Runtime for Alpha<R>
 where
-    R: Runner<Service = S> + Send + 'static,
-    S: Service + 'static,
+    R: Runner + Send + 'static,
 {
     async fn load(&self, _request: Request<LoadRequest>) -> Result<Response<LoadResponse>, Status> {
         todo!()
@@ -113,18 +104,14 @@ where
 }
 
 #[async_trait]
-pub trait Runner {
-    type Service: Service;
-}
+pub trait Runner {}
 
 #[async_trait]
-impl<F, O, S> Runner for F
+impl<F, O> Runner for F
 where
     F: FnOnce() -> O + Send,
-    O: Future<Output = S> + Send,
-    S: Service,
+    O: Future<Output = ()> + Send,
 {
-    type Service = S;
 }
 
 #[async_trait]
