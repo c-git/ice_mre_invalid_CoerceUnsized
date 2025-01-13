@@ -1,3 +1,4 @@
+#![allow(unreachable_code)]
 use shuttle_runtime::{
     runtime::*,
     tonic::{self, server::NamedService, transport::Server, Request, Response, Status},
@@ -203,8 +204,32 @@ where
         todo!()
     }
 
-    fn call(&mut self, _req: http::Request<B>) -> Self::Future {
-        todo!()
+    fn call(&mut self, req: http::Request<B>) -> Self::Future {
+        match req.uri().path() {
+            "/runtime.Runtime/Load" => {
+                #[allow(non_camel_case_types)]
+                struct LoadSvc<T: Runtime>(pub Arc<T>);
+                impl<T: Runtime> tonic::server::UnaryService<LoadRequest> for LoadSvc<T> {
+                    type Response = LoadResponse;
+                    type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                    fn call(&mut self, request: tonic::Request<LoadRequest>) -> Self::Future {
+                        let inner = Arc::clone(&self.0);
+                        let fut = async move { <T as Runtime>::load(&inner, request).await };
+                        Box::pin(fut)
+                    }
+                }
+                let inner = self.inner.clone();
+                let fut = async move {
+                    let method = LoadSvc(inner);
+                    let codec = tonic::codec::ProstCodec::default();
+                    let mut grpc = tonic::server::Grpc::new(codec);
+                    let res = grpc.unary(method, req).await;
+                    Ok(res)
+                };
+                Box::pin(fut)
+            }
+            _ => todo!(),
+        }
     }
 }
 
