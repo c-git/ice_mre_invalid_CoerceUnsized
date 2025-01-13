@@ -1,4 +1,4 @@
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 
 use runtime_server::Runtime;
 use shuttle_runtime::{
@@ -7,14 +7,8 @@ use shuttle_runtime::{
     IntoResource,
     __internals::serde_json,
     async_trait,
-    tokio::{
-        self,
-        sync::{
-            broadcast::{self, Sender},
-            oneshot,
-        },
-    },
-    Loader, ReceiverStream, ResourceInputBuilder, Runner, RuntimeServer, Service, State,
+    tokio::{self},
+    ReceiverStream, ResourceInputBuilder, Runner, RuntimeServer, Service,
 };
 
 struct CustomService;
@@ -27,11 +21,9 @@ impl shuttle_runtime::Service for CustomService {
 
 #[tokio::main]
 async fn main() {
-    let loader = |_| async { Ok(vec![]) };
-
     let mut server_builder = Server::builder();
 
-    let alpha = Alpha::new(loader, runner);
+    let alpha = Alpha::new(runner);
 
     let svc = RuntimeServer::new(alpha);
     server_builder.add_service(svc);
@@ -66,45 +58,31 @@ async fn runner(_resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runti
     todo!()
 }
 
-pub struct Alpha<L, R> {
-    // Mutexes are for interior mutability
-    stopped_tx: Sender<(StopReason, String)>,
-    kill_tx: Mutex<Option<oneshot::Sender<String>>>,
-    loader: Mutex<Option<L>>,
+pub struct Alpha<R> {
     runner: Mutex<Option<R>>,
-    /// The current state of the runtime, which is used by the ECS task to determine if the runtime
-    /// is healthy.
-    state: Arc<Mutex<State>>,
 }
 
-impl<L, R> Alpha<L, R> {
-    pub fn new(loader: L, runner: R) -> Self {
-        let (stopped_tx, _stopped_rx) = broadcast::channel(10);
-
+impl<R> Alpha<R> {
+    pub fn new(runner: R) -> Self {
         Self {
-            stopped_tx,
-            kill_tx: Mutex::new(None),
-            loader: Mutex::new(Some(loader)),
             runner: Mutex::new(Some(runner)),
-            state: Arc::new(Mutex::new(State::Unhealthy)),
         }
     }
 }
 
 #[async_trait]
-impl<L, R, S> Runtime for Alpha<L, R>
+impl<R, S> Runtime for Alpha<R>
 where
-    L: Loader + Send + 'static,
     R: Runner<Service = S> + Send + 'static,
     S: Service + 'static,
 {
-    async fn load(&self, request: Request<LoadRequest>) -> Result<Response<LoadResponse>, Status> {
+    async fn load(&self, _request: Request<LoadRequest>) -> Result<Response<LoadResponse>, Status> {
         todo!()
     }
 
     async fn start(
         &self,
-        request: Request<StartRequest>,
+        _request: Request<StartRequest>,
     ) -> Result<Response<StartResponse>, Status> {
         todo!()
     }
