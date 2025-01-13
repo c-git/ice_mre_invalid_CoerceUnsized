@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use serde::Deserialize;
-use std::{future::Future, sync::Arc};
+use std::future::Future;
 use tonic::{self, server::NamedService, transport::Server};
 
 #[tokio::main]
@@ -46,17 +46,17 @@ async fn runner() {
 #[async_trait] // No ICE if Runner constraint is removed
 impl<T> Runner for RuntimeServer<T> where T: Runner + Send + 'static {}
 #[async_trait]
-pub trait Runner: Send + Sync {}
+pub trait Runner: Send + Sync + Clone {}
 
 #[async_trait]
 impl<F, O> Runner for F
 where
-    F: FnOnce() -> O + Send + Sync,
+    F: FnOnce() -> O + Send + Sync + Clone,
     O: Future<Output = ()> + Send,
 {
 }
-pub struct RuntimeServer<T: 'static> {
-    runner: Arc<T>,
+pub struct RuntimeServer<T: 'static + Clone> {
+    runner: T,
 }
 
 impl<T: Runner> Clone for RuntimeServer<T> {
@@ -94,7 +94,7 @@ where
         match req.uri().path() {
             "" => {
                 #[allow(non_camel_case_types, dead_code)]
-                struct LoadSvc<T: Runner>(pub Arc<T>);
+                struct LoadSvc<T: Runner>(pub T);
                 impl<T: Runner> tonic::server::UnaryService<()> for LoadSvc<T> {
                     type Response = ();
                     type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
