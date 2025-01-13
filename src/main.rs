@@ -72,10 +72,8 @@ pub struct Alpha<R> {
 }
 
 impl<R> Alpha<R> {
-    pub fn new(runner: R) -> Self {
-        Self {
-            runner: Mutex::new(Some(runner)),
-        }
+    pub fn new(_runner: R) -> Self {
+        todo!()
     }
 }
 
@@ -102,9 +100,7 @@ pub struct RuntimeServer<T: Runtime> {
 
 impl<T: Runtime> Clone for RuntimeServer<T> {
     fn clone(&self) -> Self {
-        Self {
-            inner: self.inner.clone(),
-        }
+        todo!()
     }
 }
 
@@ -112,10 +108,8 @@ impl<T: Runtime> NamedService for RuntimeServer<T> {
     const NAME: &'static str = "";
 }
 impl<T: Runtime> RuntimeServer<T> {
-    pub fn new(inner: T) -> Self {
-        Self {
-            inner: Arc::new(inner),
-        }
+    pub fn new(_inner: T) -> Self {
+        todo!()
     }
 }
 
