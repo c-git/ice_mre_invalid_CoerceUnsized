@@ -2253,7 +2253,7 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 [[package]]
 name = "shuttle-api-client"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#6b2db5277137a3766290cac43007c03f6bac55da"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#55b18819b3e5be8c33588ff9592b45bf9d9119ad"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2275,7 +2275,7 @@ dependencies = [
 [[package]]
 name = "shuttle-codegen"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#6b2db5277137a3766290cac43007c03f6bac55da"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#55b18819b3e5be8c33588ff9592b45bf9d9119ad"
 dependencies = [
  "proc-macro-error2",
  "proc-macro2",
@@ -2286,7 +2286,7 @@ dependencies = [
 [[package]]
 name = "shuttle-common"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#6b2db5277137a3766290cac43007c03f6bac55da"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#55b18819b3e5be8c33588ff9592b45bf9d9119ad"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2316,7 +2316,7 @@ dependencies = [
 [[package]]
 name = "shuttle-proto"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#6b2db5277137a3766290cac43007c03f6bac55da"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#55b18819b3e5be8c33588ff9592b45bf9d9119ad"
 dependencies = [
  "futures-core",
  "prost",
@@ -2328,7 +2328,7 @@ dependencies = [
 [[package]]
 name = "shuttle-runtime"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#6b2db5277137a3766290cac43007c03f6bac55da"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#55b18819b3e5be8c33588ff9592b45bf9d9119ad"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2351,7 +2351,7 @@ dependencies = [
 [[package]]
 name = "shuttle-service"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#6b2db5277137a3766290cac43007c03f6bac55da"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#55b18819b3e5be8c33588ff9592b45bf9d9119ad"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2364,7 +2364,7 @@ dependencies = [
 [[package]]
 name = "shuttle-shared-db"
 version = "0.51.0"
-source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#6b2db5277137a3766290cac43007c03f6bac55da"
+source = "git+https://github.com/c-git/shuttle?branch=ice_investigation#55b18819b3e5be8c33588ff9592b45bf9d9119ad"
 dependencies = [
  "async-trait",
  "diesel-async",
