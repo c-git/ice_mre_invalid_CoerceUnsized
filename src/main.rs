@@ -113,8 +113,6 @@ where
 #[async_trait]
 pub trait Runner {
     type Service: Service;
-
-    async fn run(self) -> Self::Service;
 }
 
 #[async_trait]
@@ -125,8 +123,4 @@ where
     S: Service,
 {
     type Service = S;
-
-    async fn run(self) -> Self::Service {
-        self().await
-    }
 }
