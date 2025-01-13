@@ -1,6 +1,5 @@
 use async_trait::async_trait;
-use serde::{Deserialize, Serialize};
-use shuttle_runtime::{IntoResource, ResourceFactory, ResourceInputBuilder};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{
     future::Future,
     sync::{Arc, Mutex},
@@ -39,9 +38,8 @@ impl ResourceInputBuilder for CustomResource {
 
 async fn runner() {
     // Doesn't happen if I trivially replace either of these lines like with a todo!() instead of the assigned value
-    let x: <CustomResource as ResourceInputBuilder>::Output =
-        serde_json::from_slice("".as_bytes()).unwrap();
-    let operator: opendal::Operator = x.into_resource().await.unwrap().inner.unwrap();
+    let x: Wrapper = serde_json::from_slice("".as_bytes()).unwrap();
+    let operator: opendal::Operator = x.into_resource1().unwrap();
 
     // Didn't test
     // operator.delete_stream().await.unwrap();
@@ -158,3 +156,27 @@ where
 
 pub type BoxFuture<T, E> =
     std::pin::Pin<Box<dyn self::Future<Output = Result<T, E>> + Send + 'static>>;
+
+#[async_trait]
+pub trait IntoResource<R>: Serialize + DeserializeOwned {
+    async fn into_resource(self) -> Result<R, shuttle_runtime::Error>;
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ResourceFactory {}
+
+/// want to provision and how to do it on your behalf on the fly.
+#[async_trait]
+pub trait ResourceInputBuilder: Default {
+    type Input: Serialize + DeserializeOwned;
+
+    type Output: Serialize + DeserializeOwned;
+
+    async fn build(self, factory: &ResourceFactory) -> Result<Self::Input, shuttle_runtime::Error>;
+}
+
+impl Wrapper {
+    fn into_resource1(self) -> Result<opendal::Operator, shuttle_runtime::Error> {
+        todo!()
+    }
+}
