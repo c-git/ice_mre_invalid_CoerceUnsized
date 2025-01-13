@@ -25,19 +25,7 @@ async fn runner(resources: Vec<Vec<u8>>) -> Result<CustomService, shuttle_runtim
     let mut iter = resources.into_iter();
     let x: <shuttle_shared_db::Postgres as ResourceInputBuilder>::Output =
         serde_json::from_slice(&iter.next().unwrap()).unwrap();
-    let operator: SerdeJsonOperator = x.into_resource().await.unwrap();
-    operator.0.check().await.unwrap();
+    let operator: opendal::Operator = x.into_resource().await.unwrap();
+    operator.check().await.unwrap();
     todo!()
-}
-#[derive(Clone, Debug)]
-pub struct SerdeJsonOperator(pub opendal::Operator);
-impl SerdeJsonOperator {}
-
-#[shuttle_runtime::async_trait]
-impl IntoResource<SerdeJsonOperator>
-    for <shuttle_shared_db::Postgres as ResourceInputBuilder>::Output
-{
-    async fn into_resource(self) -> Result<SerdeJsonOperator, shuttle_runtime::Error> {
-        todo!()
-    }
 }
